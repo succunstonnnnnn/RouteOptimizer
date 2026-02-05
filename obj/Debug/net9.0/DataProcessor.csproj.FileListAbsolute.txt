@@ -1,0 +1,14 @@
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/bin/Debug/net9.0/DataProcessor
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/bin/Debug/net9.0/DataProcessor.deps.json
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/bin/Debug/net9.0/DataProcessor.runtimeconfig.json
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/bin/Debug/net9.0/DataProcessor.dll
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/bin/Debug/net9.0/DataProcessor.pdb
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.GeneratedMSBuildEditorConfig.editorconfig
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.AssemblyInfoInputs.cache
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.AssemblyInfo.cs
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.csproj.CoreCompileInputs.cache
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.dll
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/refint/DataProcessor.dll
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.pdb
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/DataProcessor.genruntimeconfig.cache
+/Users/katerina/Desktop/RouteOptimizer/DataProcessor/obj/Debug/net9.0/ref/DataProcessor.dll
