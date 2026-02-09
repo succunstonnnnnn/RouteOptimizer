@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RouteOptimizer.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc2e93906856dd153d23592084bde7d923225ced")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72db00043661843a82a069484283af2db183db03")]
 [assembly: System.Reflection.AssemblyProductAttribute("RouteOptimizer.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RouteOptimizer.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
