@@ -1,0 +1,55 @@
+cd /Users/katerina/Desktop/RouteOptimizer
+
+cat > .gitignore << 'EOF'
+# .NET Build Output
+**/bin/
+**/obj/
+**/packages/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+
+# OS-specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDEs - Rider + VS Code + Visual Studio
+/.idea/
+.vscode/settings.json
+.vscode/launch.json
+.vs/
+.vscode-test/
+.idea/
+*.iml
+*.iws
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+*.nupkg
+!**/*.props
+!**/*.targets
+
+# NuGet
+**/*.nuget.props
+**/*.nuget.targets
+
+# Rider HTTP Client
+/RiderHttpRequests/
+
+# Global tools
+/tools/
+!.github/workflows/
+EOF
