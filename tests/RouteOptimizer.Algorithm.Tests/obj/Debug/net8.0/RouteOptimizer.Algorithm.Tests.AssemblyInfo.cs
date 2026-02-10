@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RouteOptimizer.Algorithm.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc2e93906856dd153d23592084bde7d923225ced")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab36d678f3ae76f457d9a4afa99dd2a83c13d97e")]
 [assembly: System.Reflection.AssemblyProductAttribute("RouteOptimizer.Algorithm.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RouteOptimizer.Algorithm.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

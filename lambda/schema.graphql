@@ -1,0 +1,40 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  _health: String
+}
+
+type Mutation {
+  optimizeRoutes(input: OptimizeRoutesInput!): OptimizeRoutesPayload!
+}
+
+# -------- INPUTS --------
+
+input OptimizeRoutesInput {
+  tenantId: ID!
+  request: RoutingRequestInput!
+}
+
+input RoutingRequestInput {
+  technicians: Int!
+  visits: Int!
+}
+
+# -------- OUTPUTS --------
+
+type OptimizeRoutesPayload {
+  tenantId: ID!
+  result: RoutingResponse!
+}
+
+type RoutingResponse {
+  routes: [Route!]!
+}
+
+type Route {
+  technicianId: Int!
+  visitIds: [Int!]!
+}

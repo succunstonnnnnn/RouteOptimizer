@@ -1,0 +1,8 @@
+{
+    "routes": [
+        {
+            "technicianId": 1,
+            "visitIds": [ 101, 102 ]
+        }
+    ]
+}
