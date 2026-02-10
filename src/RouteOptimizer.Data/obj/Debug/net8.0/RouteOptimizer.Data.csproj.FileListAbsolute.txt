@@ -1,0 +1,16 @@
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/bin/Debug/net8.0/RouteOptimizer.Data.deps.json
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/bin/Debug/net8.0/RouteOptimizer.Data.dll
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/bin/Debug/net8.0/RouteOptimizer.Data.pdb
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/bin/Debug/net8.0/RouteOptimizer.Core.dll
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/bin/Debug/net8.0/RouteOptimizer.Core.pdb
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.csproj.AssemblyReference.cache
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.GeneratedMSBuildEditorConfig.editorconfig
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfoInputs.cache
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfo.cs
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.csproj.CoreCompileInputs.cache
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.sourcelink.json
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOpt.6B644E9F.Up2Date
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.dll
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/refint/RouteOptimizer.Data.dll
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.pdb
+/Users/katerina/Desktop/RouteOptimizer/src/RouteOptimizer.Data/obj/Debug/net8.0/ref/RouteOptimizer.Data.dll
