@@ -1,8 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8ac03b09-d6d6-4fb6-972c-9d8f3e682e5c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/copilot.data.migration.agent.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/dbnavigator.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RouteOptimizer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/Debug/net8.0/RouteOptimizer.Algorithm.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/Debug/net8.0/RouteOptimizer.Algorithm.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/Debug/net8.0/RouteOptimizer.Algorithm.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/Debug/net8.0/RouteOptimizer.Algorithm.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/RouteOptimizer.Algorithm.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/RouteOptimizer.Algorithm.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Algorithm/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/Class1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/Debug/net8.0/RouteOptimizer.Core.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/Debug/net8.0/RouteOptimizer.Core.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/Debug/net8.0/RouteOptimizer.Core.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/Debug/net8.0/RouteOptimizer.Core.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/RouteOptimizer.Core.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/RouteOptimizer.Core.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Core/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/DataProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/DataProcessor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/DistanceMatrixBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/DistanceMatrixBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/RouteOptimizer.Data.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/RouteOptimizer.Data.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/Debug/net8.0/RouteOptimizer.Data.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/RouteOptimizer.Data.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/RouteOptimizer.Data/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/Debug/net8.0/RouteOptimizer.Algorithm.Tests.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/Debug/net8.0/RouteOptimizer.Algorithm.Tests.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/Debug/net8.0/RouteOptimizer.Algorithm.Tests.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/Debug/net8.0/RouteOptimizer.Algorithm.Tests.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/RouteOptimizer.Algorithm.Tests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/RouteOptimizer.Algorithm.Tests.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Algorithm.Tests/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/RouteOptimizer.Data.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/RouteOptimizer.Data.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/UnitTest1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/Debug/net8.0/RouteOptimizer.Data.Tests.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/RouteOptimizer.Data.Tests.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Data.Tests/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/Debug/net8.0/RouteOptimizer.Integration.Tests.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/Debug/net8.0/RouteOptimizer.Integration.Tests.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/Debug/net8.0/RouteOptimizer.Integration.Tests.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/Debug/net8.0/RouteOptimizer.Integration.Tests.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/RouteOptimizer.Integration.Tests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/RouteOptimizer.Integration.Tests.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Integration.Tests/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/Debug/net8.0/RouteOptimizer.Tests.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/Debug/net8.0/RouteOptimizer.Tests.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/Debug/net8.0/RouteOptimizer.Tests.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/Debug/net8.0/RouteOptimizer.Tests.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/RouteOptimizer.Tests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/RouteOptimizer.Tests.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/tests/RouteOptimizer.Tests/obj/rider.project.restore.info" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;succunstonnnnnn&quot;
   }
 }</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/succunstonnnnnn/RouteOptimizer.git&quot;,
+    &quot;accountId&quot;: &quot;aeb51d47-bd54-42da-aa04-58637a52ab05&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/global.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/samples/raw-data/sample-sites.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/samples/raw-data/sample-technicians.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/RouteOptimizer.Core/Models/RawModels.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/RouteOptimizer.Data/Parsers/ServiceSiteParser.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="39POiUQebsesjzjnM28UqFKgqtX" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;data&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.Oracle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8ac03b09-d6d6-4fb6-972c-9d8f3e682e5c" name="Changes" comment="" />
+      <created>1770594366281</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770594366281</updated>
+      <workItem from="1770594367349" duration="1677000" />
+      <workItem from="1770644610084" duration="2250000" />
+      <workItem from="1770656460105" duration="2069000" />
+      <workItem from="1770667437535" duration="3690000" />
+      <workItem from="1770717401246" duration="11014000" />
+      <workItem from="1770743742201" duration="33000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
 </project>

@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\RouteOptimizer.Data\RouteOptimizer.Data.csproj" />
+    <ProjectReference Include="..\..\src\RouteOptimizer.Core\RouteOptimizer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

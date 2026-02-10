@@ -1,0 +1,74 @@
+[
+    {
+        "id": "site-001",
+        "name": "Service site 1",
+        "address": "100 Main St, New York, NY 10001, USA",
+        "coordinates": {
+            "latitude": 40.7489,
+            "longitude": -73.9680
+        },
+        "city": "New York",
+        "zipCode": "10001",
+        "tenantId": "tenant-001",
+        "access": "best accessed by car/van, no entrance permit required",
+        "services": [
+            {
+                "id": "service-001",
+                "jobType": "exterior",
+                "siteId": "site-001",
+                "tenantId": "tenant-001",
+                "frequencyOfVisits": "2 weeks",
+                "techUserId": "tech-001",
+                "techUserName": "Mary Poppins"
+            }
+        ]
+    },
+    {
+        "id": "site-002",
+        "name": "Service site 2",
+        "address": "250 Park Ave, New York, NY 10177, USA",
+        "coordinates": {
+            "latitude": 40.7549,
+            "longitude": -73.9752
+        },
+        "city": "New York",
+        "zipCode": "10177",
+        "tenantId": "tenant-001",
+        "access": "either transport works, entrance permit required",
+        "services": [
+            {
+                "id": "service-002",
+                "jobType": "interior",
+                "siteId": "site-002",
+                "tenantId": "tenant-001",
+                "frequencyOfVisits": "3 weeks",
+                "techUserId": "tech-002",
+                "techUserName": "Anne Jones"
+            }
+        ]
+    },
+    {
+        "id": "site-003",
+        "name": "Service site 3",
+        "address": "500 7th Ave, New York, NY 10018, USA",
+        "coordinates": {
+            "latitude": 40.7527,
+            "longitude": -73.9895
+        },
+        "city": "New York",
+        "zipCode": "10018",
+        "tenantId": "tenant-001",
+        "access": "car/van required",
+        "services": [
+            {
+                "id": "service-003",
+                "jobType": "exterior",
+                "siteId": "site-003",
+                "tenantId": "tenant-001",
+                "frequencyOfVisits": "2 weeks",
+                "techUserId": "tech-003",
+                "techUserName": "Tom Goodman"
+            }
+        ]
+    }
+]
