@@ -37,8 +37,25 @@ public class ExcelReader
                 BestAccessedBy = ParseTransportType(GetCellString(xlRow, columns, "TransportType")),
                 RequiresPermit = GetCellBool(xlRow, columns, "RequiresPermit"),
                 PermitDifficulty = ParsePermitDifficulty(GetCellString(xlRow, columns, "PermitDifficulty")),
+                TechsWithPermit = ParseCommaSeparatedList(GetCellString(xlRow, columns, "TechsWithPermit")),
+                MustBeServicedWithSiteIds = ParseCommaSeparatedList(GetCellString(xlRow, columns, "MustBeServicedWithSiteIds")),
+                MondayStart = GetCellString(xlRow, columns, "MondayStart"),
+                MondayEnd = GetCellString(xlRow, columns, "MondayEnd"),
+                TuesdayStart = GetCellString(xlRow, columns, "TuesdayStart"),
+                TuesdayEnd = GetCellString(xlRow, columns, "TuesdayEnd"),
+                WednesdayStart = GetCellString(xlRow, columns, "WednesdayStart"),
+                WednesdayEnd = GetCellString(xlRow, columns, "WednesdayEnd"),
+                ThursdayStart = GetCellString(xlRow, columns, "ThursdayStart"),
+                ThursdayEnd = GetCellString(xlRow, columns, "ThursdayEnd"),
+                FridayStart = GetCellString(xlRow, columns, "FridayStart"),
+                FridayEnd = GetCellString(xlRow, columns, "FridayEnd"),
+                SaturdayStart = GetCellString(xlRow, columns, "SaturdayStart"),
+                SaturdayEnd = GetCellString(xlRow, columns, "SaturdayEnd"),
+                SundayStart = GetCellString(xlRow, columns, "SundayStart"),
+                SundayEnd = GetCellString(xlRow, columns, "SundayEnd"),
             };
 
+            site.Availability = ServiceSiteParser.ParseAvailability(site);
             sites.Add(site);
         }
 
@@ -146,6 +163,8 @@ public class ExcelReader
                 RequiresLift = GetCellBool(xlRow, columns, "RequiresLift"),
                 RequiresPesticides = GetCellBool(xlRow, columns, "RequiresPesticides"),
                 RequiresCitizen = GetCellBool(xlRow, columns, "RequiresCitizen"),
+                AllowedTechnicianIds = ParseCommaSeparatedList(GetCellString(xlRow, columns, "AllowedTechnicianIds")),
+                ForbiddenTechnicianIds = ParseCommaSeparatedList(GetCellString(xlRow, columns, "ForbiddenTechnicianIds")),
             };
 
             service.VisitFrequency = ServiceSiteParser.ParseFrequencyString(service.FrequencyOfVisits);
@@ -204,6 +223,12 @@ public class ExcelReader
         if (cell.TryGetValue(out bool bVal)) return bVal;
         var str = cell.GetString().Trim().ToLowerInvariant();
         return str is "yes" or "true" or "1";
+    }
+
+    private static List<string>? ParseCommaSeparatedList(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        return value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
     }
 
     private static TransportType ParseTransportType(string? value)

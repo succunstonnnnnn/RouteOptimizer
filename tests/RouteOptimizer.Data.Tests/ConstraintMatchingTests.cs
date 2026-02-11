@@ -138,7 +138,6 @@ public class ConstraintMatchingTests
     [Fact]
     public void InferSkillsRequired_MapsConstraintFieldsFromService()
     {
-        var parser = new ServiceSiteParser();
         var site = new ServiceSite { Id = "s1", BestAccessedBy = TransportType.Car };
         var service = new Service
         {
@@ -152,7 +151,7 @@ public class ConstraintMatchingTests
             RequiresCitizen = true
         };
 
-        var result = parser.InferSkillsRequired(site, service);
+        var result = ServiceSiteParser.InferSkillsRequired(site, service);
 
         Assert.Equal(ServiceType.Exterior, result.ServiceType);
         Assert.True(result.IsPhysicallyDemanding);

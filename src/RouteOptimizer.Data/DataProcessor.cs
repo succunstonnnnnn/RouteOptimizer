@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using RouteOptimizer.Core.Models;
+using RouteOptimizer.Data.Excel;
 using RouteOptimizer.Data.Parsers;
 using RouteOptimizer.Data.Preprocessing;
 using RouteOptimizer.Data.Validation;
@@ -19,7 +20,7 @@ public class DataProcessor
     {
         _siteParser = new ServiceSiteParser();
         _techParser = new TechnicianParser();
-        _visitGenerator = new VisitGenerator(_siteParser);
+        _visitGenerator = new VisitGenerator();
         _distanceMatrixBuilder = new DistanceMatrixBuilder();
         _validator = new DataValidator();
         _logger = logger;
@@ -30,7 +31,7 @@ public class DataProcessor
         string techniciansJson,
         DateTimeOffset startDate)
     {
-        // 1. Parse raw JSON
+        // Parse raw JSON
         _logger?.LogInformation("Parsing site data...");
         var sites = _siteParser.ParseFromJson(sitesJson);
         _logger?.LogInformation("Parsed {SiteCount} sites", sites.Count);
@@ -39,7 +40,34 @@ public class DataProcessor
         var technicians = _techParser.ParseFromJson(techniciansJson);
         _logger?.LogInformation("Parsed {TechCount} technicians", technicians.Count);
 
-        // 2. Validate input
+        return ProcessParsedData(sites, technicians, startDate);
+    }
+
+    public ProcessedData ProcessFromExcel(
+        Stream excelStream,
+        DateTimeOffset startDate)
+    {
+        var reader = new ExcelReader();
+
+        _logger?.LogInformation("Reading site data from Excel...");
+        var sites = reader.ReadSites(excelStream);
+        _logger?.LogInformation("Read {SiteCount} sites from Excel", sites.Count);
+
+        excelStream.Position = 0;
+
+        _logger?.LogInformation("Reading technician data from Excel...");
+        var technicians = reader.ReadTechnicians(excelStream);
+        _logger?.LogInformation("Read {TechCount} technicians from Excel", technicians.Count);
+
+        return ProcessParsedData(sites, technicians, startDate);
+    }
+
+    private ProcessedData ProcessParsedData(
+        List<ServiceSite> sites,
+        List<Technician> technicians,
+        DateTimeOffset startDate)
+    {
+        // 1. Validate input
         var inputErrors = _validator.ValidateInput(sites, technicians);
         if (inputErrors.Count > 0)
         {
@@ -47,7 +75,7 @@ public class DataProcessor
                 inputErrors.Count, string.Join("; ", inputErrors));
         }
 
-        // 3. Calculate planning horizon (LCM of frequencies)
+        // 2. Calculate planning horizon (LCM of frequencies)
         var allServices = sites
             .Where(s => s.Services != null)
             .SelectMany(s => s.Services!)
@@ -57,11 +85,11 @@ public class DataProcessor
             .CalculateFromServices(allServices);
         _logger?.LogInformation("Planning horizon: {Weeks} weeks", planningHorizonWeeks);
 
-        // 4. Generate visit instances
+        // 3. Generate visit instances
         var visits = _visitGenerator.GenerateVisits(sites, startDate, planningHorizonWeeks);
         _logger?.LogInformation("Generated {VisitCount} visit instances", visits.Count);
 
-        // 5. Build distance matrix
+        // 4. Build distance matrix
         var distanceMatrix = _distanceMatrixBuilder.Build(visits, technicians);
         _logger?.LogInformation("Distance matrix built: {Rows}x{Cols}",
             distanceMatrix.Locations.Count, distanceMatrix.Locations.Count);
@@ -76,7 +104,7 @@ public class DataProcessor
             StartDate = startDate
         };
 
-        // 6. Validate output
+        // 5. Validate output
         var outputErrors = _validator.ValidateOutput(result);
         if (outputErrors.Count > 0)
         {

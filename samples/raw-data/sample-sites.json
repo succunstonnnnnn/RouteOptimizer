@@ -11,6 +11,16 @@
         "zipCode": "10001",
         "tenantId": "tenant-001",
         "access": "best accessed by car/van, no entrance permit required",
+        "mondayStart": "07:00",
+        "mondayEnd": "18:00",
+        "tuesdayStart": "07:00",
+        "tuesdayEnd": "18:00",
+        "wednesdayStart": "07:00",
+        "wednesdayEnd": "18:00",
+        "thursdayStart": "07:00",
+        "thursdayEnd": "18:00",
+        "fridayStart": "07:00",
+        "fridayEnd": "16:00",
         "services": [
             {
                 "id": "service-001",
@@ -35,6 +45,18 @@
         "zipCode": "10177",
         "tenantId": "tenant-001",
         "access": "either transport works, entrance permit required",
+        "requiresPermit": true,
+        "techsWithPermit": ["tech-001", "tech-002"],
+        "mondayStart": "09:00",
+        "mondayEnd": "17:00",
+        "tuesdayStart": "09:00",
+        "tuesdayEnd": "17:00",
+        "wednesdayStart": "09:00",
+        "wednesdayEnd": "17:00",
+        "thursdayStart": "09:00",
+        "thursdayEnd": "17:00",
+        "fridayStart": "09:00",
+        "fridayEnd": "17:00",
         "services": [
             {
                 "id": "service-002",
@@ -67,7 +89,9 @@
                 "tenantId": "tenant-001",
                 "frequencyOfVisits": "2 weeks",
                 "techUserId": "tech-003",
-                "techUserName": "Tom Goodman"
+                "techUserName": "Tom Goodman",
+                "allowedTechnicianIds": ["tech-001", "tech-003"],
+                "forbiddenTechnicianIds": ["tech-002"]
             }
         ]
     }

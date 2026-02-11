@@ -84,4 +84,73 @@ public class ServiceSiteParserTests
         Assert.Equal("service-002", sites[1].Services![0].Id);
         Assert.Equal("service-003", sites[2].Services![0].Id);
     }
+
+    [Fact]
+    public void ParseAvailability_WithPerDayFields_ParsesCorrectly()
+    {
+        var site = new ServiceSite
+        {
+            Id = "s1",
+            MondayStart = "09:00",
+            MondayEnd = "17:00",
+            WednesdayStart = "10:00",
+            WednesdayEnd = "15:00"
+        };
+
+        var availability = ServiceSiteParser.ParseAvailability(site);
+
+        Assert.Equal(2, availability.TimeWindows.Count);
+        Assert.True(availability.IsAvailableOnDay(DayOfWeek.Monday));
+        Assert.True(availability.IsAvailableOnDay(DayOfWeek.Wednesday));
+        Assert.False(availability.IsAvailableOnDay(DayOfWeek.Tuesday));
+
+        var monday = availability.GetWindowForDay(DayOfWeek.Monday)!;
+        Assert.Equal(new TimeSpan(9, 0, 0), monday.StartTime);
+        Assert.Equal(new TimeSpan(17, 0, 0), monday.EndTime);
+
+        var wednesday = availability.GetWindowForDay(DayOfWeek.Wednesday)!;
+        Assert.Equal(new TimeSpan(10, 0, 0), wednesday.StartTime);
+        Assert.Equal(new TimeSpan(15, 0, 0), wednesday.EndTime);
+    }
+
+    [Fact]
+    public void ParseAvailability_NoFields_DefaultsToMonFri()
+    {
+        var site = new ServiceSite { Id = "s1" };
+
+        var availability = ServiceSiteParser.ParseAvailability(site);
+
+        Assert.Equal(5, availability.TimeWindows.Count);
+        Assert.True(availability.IsAvailableOnDay(DayOfWeek.Monday));
+        Assert.True(availability.IsAvailableOnDay(DayOfWeek.Friday));
+        Assert.False(availability.IsAvailableOnDay(DayOfWeek.Saturday));
+        Assert.False(availability.IsAvailableOnDay(DayOfWeek.Sunday));
+
+        var monday = availability.GetWindowForDay(DayOfWeek.Monday)!;
+        Assert.Equal(new TimeSpan(8, 0, 0), monday.StartTime);
+        Assert.Equal(new TimeSpan(17, 0, 0), monday.EndTime);
+    }
+
+    [Fact]
+    public void ParseFromJson_SampleData_AvailabilityPopulated()
+    {
+        var json = File.ReadAllText(Path.Combine(TestHelper.SamplesPath, "sample-sites.json"));
+        var sites = _parser.ParseFromJson(json);
+
+        // site-001 has Mon-Fri availability set in sample JSON
+        var site1 = sites.First(s => s.Id == "site-001");
+        Assert.Equal(5, site1.Availability.TimeWindows.Count);
+        Assert.True(site1.Availability.IsAvailableOnDay(DayOfWeek.Monday));
+        Assert.False(site1.Availability.IsAvailableOnDay(DayOfWeek.Saturday));
+
+        var friday = site1.Availability.GetWindowForDay(DayOfWeek.Friday)!;
+        Assert.Equal(new TimeSpan(7, 0, 0), friday.StartTime);
+        Assert.Equal(new TimeSpan(16, 0, 0), friday.EndTime);
+
+        // site-003 has no availability fields — should get Mon-Fri 8-17 default
+        var site3 = sites.First(s => s.Id == "site-003");
+        Assert.Equal(5, site3.Availability.TimeWindows.Count);
+        var defaultMonday = site3.Availability.GetWindowForDay(DayOfWeek.Monday)!;
+        Assert.Equal(new TimeSpan(8, 0, 0), defaultMonday.StartTime);
+    }
 }

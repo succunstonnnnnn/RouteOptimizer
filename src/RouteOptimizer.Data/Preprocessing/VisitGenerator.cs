@@ -5,12 +5,6 @@ namespace RouteOptimizer.Data.Preprocessing;
 
 public class VisitGenerator
 {
-    private readonly ServiceSiteParser _siteParser;
-
-    public VisitGenerator(ServiceSiteParser siteParser)
-    {
-        _siteParser = siteParser;
-    }
 
     public List<VisitInstance> GenerateVisits(
         List<ServiceSite> sites,
@@ -56,8 +50,8 @@ public class VisitGenerator
         );
 
 
-        var availability = _siteParser.ParseAvailability(site);
-        var skillsRequired = _siteParser.InferSkillsRequired(site, service);
+        var availability = site.Availability;
+        var skillsRequired = ServiceSiteParser.InferSkillsRequired(site, service);
 
         for (int i = 0; i < totalVisits; i++)
         {

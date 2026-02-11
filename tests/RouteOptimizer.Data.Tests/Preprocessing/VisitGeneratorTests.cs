@@ -6,11 +6,11 @@ namespace RouteOptimizer.Data.Tests.Preprocessing;
 
 public class VisitGeneratorTests
 {
-    private readonly VisitGenerator _generator = new(new ServiceSiteParser());
+    private readonly VisitGenerator _generator = new();
 
     private static ServiceSite MakeSite(string siteId = "site-001", double lat = 40.75, double lon = -73.97)
     {
-        return new ServiceSite
+        var site = new ServiceSite
         {
             Id = siteId,
             Name = "Test Site",
@@ -18,6 +18,8 @@ public class VisitGeneratorTests
             Coordinates = new Coordinates { Latitude = lat, Longitude = lon },
             Services = new List<Service>()
         };
+        site.Availability = ServiceSiteParser.ParseAvailability(site);
+        return site;
     }
 
     private static Service MakeService(

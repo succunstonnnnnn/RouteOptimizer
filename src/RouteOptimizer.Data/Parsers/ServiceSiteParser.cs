@@ -18,6 +18,8 @@ public class ServiceSiteParser
 
         foreach (var site in sites)
         {
+            site.Availability = ParseAvailability(site);
+
             if (site.Services == null) continue;
             foreach (var service in site.Services)
             {
@@ -30,35 +32,67 @@ public class ServiceSiteParser
         return sites;
     }
 
-    public ServiceSiteAvailability ParseAvailability(ServiceSite site)
+    public static ServiceSiteAvailability ParseAvailability(ServiceSite site)
     {
         var availability = new ServiceSiteAvailability();
 
-        // TODO: Parse from actual fields when they're added to ServiceSite
-        // For now, default to business hours Mon-Fri 8:00-17:00
-        var daysOfWeek = new[]
+        var dayMappings = new (DayOfWeek Day, string? Start, string? End)[]
         {
-            DayOfWeek.Monday,
-            DayOfWeek.Tuesday,
-            DayOfWeek.Wednesday,
-            DayOfWeek.Thursday,
-            DayOfWeek.Friday
+            (DayOfWeek.Monday, site.MondayStart, site.MondayEnd),
+            (DayOfWeek.Tuesday, site.TuesdayStart, site.TuesdayEnd),
+            (DayOfWeek.Wednesday, site.WednesdayStart, site.WednesdayEnd),
+            (DayOfWeek.Thursday, site.ThursdayStart, site.ThursdayEnd),
+            (DayOfWeek.Friday, site.FridayStart, site.FridayEnd),
+            (DayOfWeek.Saturday, site.SaturdayStart, site.SaturdayEnd),
+            (DayOfWeek.Sunday, site.SundayStart, site.SundayEnd),
         };
 
-        foreach (var day in daysOfWeek)
+        foreach (var (day, start, end) in dayMappings)
         {
-            availability.TimeWindows.Add(new TimeWindow
+            var startTime = ParseTimeSpan(start);
+            var endTime = ParseTimeSpan(end);
+
+            if (startTime.HasValue && endTime.HasValue)
             {
-                DayOfWeek = day,
-                StartTime = new TimeSpan(8, 0, 0),
-                EndTime = new TimeSpan(17, 0, 0)
-            });
+                availability.TimeWindows.Add(new TimeWindow
+                {
+                    DayOfWeek = day,
+                    StartTime = startTime.Value,
+                    EndTime = endTime.Value
+                });
+            }
+        }
+
+        // Fall back to Mon-Fri 8:00-17:00 if no availability fields were set
+        if (availability.TimeWindows.Count == 0)
+        {
+            var defaultDays = new[]
+            {
+                DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                DayOfWeek.Thursday, DayOfWeek.Friday
+            };
+
+            foreach (var day in defaultDays)
+            {
+                availability.TimeWindows.Add(new TimeWindow
+                {
+                    DayOfWeek = day,
+                    StartTime = new TimeSpan(8, 0, 0),
+                    EndTime = new TimeSpan(17, 0, 0)
+                });
+            }
         }
 
         return availability;
     }
 
-    public SkillsRequired InferSkillsRequired(ServiceSite site, Service service)
+    private static TimeSpan? ParseTimeSpan(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        return TimeSpan.TryParse(value, out var result) ? result : null;
+    }
+
+    public static SkillsRequired InferSkillsRequired(ServiceSite site, Service service)
     {
         return new SkillsRequired
         {
