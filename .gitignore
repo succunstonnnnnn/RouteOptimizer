@@ -482,3 +482,13 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+lambda/RouteOptimizer.Lambda/obj
+lambda/RouteOptimizer.Lambda.Tests/obj
+src/RouteOptimizer.Algorithm/obj
+src/RouteOptimizer.Core/obj
+src/RouteOptimizer.Data/obj
+tests/RouteOptimizer.Algorithm.Tests/obj
+tests/RouteOptimizer.Tests/obj
+tests/RouteOptimizer.Data.Tests/bin
+tests/RouteOptimizer.Data.Tests/obj
+tests/RouteOptimizer.Integration.Tests/obj
