@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.LocationService" Version="4.0.3.14" />
         <PackageReference Include="ClosedXML" Version="0.102.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     </ItemGroup>

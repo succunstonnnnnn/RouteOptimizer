@@ -1,11 +1,10 @@
+using RouteOptimizer.Core.Geo;
 using RouteOptimizer.Core.Models;
 
 namespace RouteOptimizer.Data;
 
 public class DistanceMatrixBuilder
 {
-    private const double EarthRadiusKm = 6371.0;
-
     public DistanceMatrix Build(
         IReadOnlyList<VisitInstance> visits,
         IReadOnlyList<Technician> technicians)
@@ -58,24 +57,21 @@ public class DistanceMatrixBuilder
             });
         }
 
-        // 3. Pre-compute radian values for all locations
+        // 3. Build distance matrix using GeoDistanceService (parallelized)
         int n = locations.Count;
-        var latRad = new double[n];
-        var lonRad = new double[n];
-        for (int k = 0; k < n; k++)
-        {
-            latRad[k] = ToRad(locations[k].Coordinates.Latitude);
-            lonRad[k] = ToRad(locations[k].Coordinates.Longitude);
-        }
-
-        // 4. Build distance matrix (parallelized for 100+ locations)
         var distances = new double[n, n];
 
         Parallel.For(0, n, i =>
         {
             for (int j = i + 1; j < n; j++)
             {
-                var km = HaversineKmRad(latRad[i], lonRad[i], latRad[j], lonRad[j]);
+                var km = GeoDistanceService.CalculateDistance(
+                    locations[i].Coordinates.Latitude,
+                    locations[i].Coordinates.Longitude,
+                    locations[j].Coordinates.Latitude,
+                    locations[j].Coordinates.Longitude,
+                    DistanceUnit.Kilometers);
+
                 distances[i, j] = km;
                 distances[j, i] = km;
             }
@@ -87,23 +83,4 @@ public class DistanceMatrixBuilder
             Distances = distances
         };
     }
-
-    private static double HaversineKmRad(
-        double lat1Rad, double lon1Rad,
-        double lat2Rad, double lon2Rad)
-    {
-        var dLat = lat2Rad - lat1Rad;
-        var dLon = lon2Rad - lon1Rad;
-
-        var a =
-            Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-            Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
-            Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        return EarthRadiusKm * c;
-    }
-
-    private static double ToRad(double deg)
-        => deg * Math.PI / 180.0;
 }
