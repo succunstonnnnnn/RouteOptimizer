@@ -113,14 +113,34 @@ public class ServiceSiteParser
         if (string.IsNullOrWhiteSpace(frequency))
             return VisitFrequency.BiWeekly;
 
-        return frequency.Trim().ToLowerInvariant() switch
+        var f = frequency.Trim().ToLowerInvariant();
+
+        // Exact matches first
+        var result = f switch
         {
-            "1 week" or "weekly" or "1" => VisitFrequency.Weekly,
+            "1 week" or "weekly" or "1" => (VisitFrequency?)VisitFrequency.Weekly,
             "2 weeks" or "biweekly" or "bi-weekly" or "2" => VisitFrequency.BiWeekly,
             "3 weeks" or "3" => VisitFrequency.ThreeWeekly,
             "4 weeks" or "monthly" or "4" => VisitFrequency.FourWeeks,
-            _ => VisitFrequency.BiWeekly
+            _ => null
         };
+        if (result.HasValue) return result.Value;
+
+        // Pattern-based matching for formats like "1x a week", "1x in 14 days", "2x a month"
+        if (f.Contains("week") && (f.Contains("1x") || f.Contains("once")))
+            return VisitFrequency.Weekly;
+        if (f.Contains("week") && (f.Contains("2x") || f.Contains("twice")))
+            return VisitFrequency.Weekly; // 2x/week is high frequency, map to weekly
+        if (f.Contains("7 day"))
+            return VisitFrequency.Weekly;
+        if (f.Contains("14 day") || (f.Contains("2") && f.Contains("week")))
+            return VisitFrequency.BiWeekly;
+        if (f.Contains("21 day") || (f.Contains("3") && f.Contains("week")))
+            return VisitFrequency.ThreeWeekly;
+        if (f.Contains("28 day") || f.Contains("month") || (f.Contains("4") && f.Contains("week")))
+            return VisitFrequency.FourWeeks;
+
+        return VisitFrequency.BiWeekly;
     }
 
     private static int DefaultDurationMinutes(string? jobType)
@@ -134,7 +154,7 @@ public class ServiceSiteParser
         };
     }
 
-    private static ServiceType ParseServiceType(string? jobType)
+    public static ServiceType ParseServiceType(string? jobType)
     {
         if (string.IsNullOrEmpty(jobType))
             return ServiceType.Interior;

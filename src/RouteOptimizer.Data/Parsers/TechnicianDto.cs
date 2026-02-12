@@ -7,6 +7,7 @@ public class TechnicianDto
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
+    public string? HomeAddress { get; set; }
     public Coordinates? HomeLocation { get; set; }
     public Coordinates? OfficeLocation { get; set; }
 
