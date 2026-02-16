@@ -25,34 +25,3 @@ public class TimeWindow
     }
 }
 
-public class ServiceSiteAvailability
-{
-    public List<TimeWindow> TimeWindows { get; set; } = new();
-
-    public bool IsAvailableAt(DateTimeOffset visitDateTime)
-    {
-        return TimeWindows.Any(tw => tw.IsValidAt(visitDateTime));
-    }
-
-    public bool IsAvailableOnDay(DayOfWeek day)
-    {
-        return TimeWindows.Any(tw => tw.DayOfWeek == day && !tw.IsEmpty());
-    }
-
-    public TimeWindow? GetWindowForDay(DayOfWeek day)
-    {
-        return TimeWindows.FirstOrDefault(tw => tw.DayOfWeek == day);
-    }
-}
-
-public class BreakRequirement
-{
-    public int MinBreakMinutes { get; set; }
-    public TimeSpan BreakWindowStart { get; set; }
-    public TimeSpan BreakWindowEnd { get; set; }
-
-    public bool IsBreakTimeValid(TimeSpan breakTime)
-    {
-        return breakTime >= BreakWindowStart && breakTime <= BreakWindowEnd;
-    }
-}

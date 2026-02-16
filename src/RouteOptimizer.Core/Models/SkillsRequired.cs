@@ -1,13 +1,5 @@
 namespace RouteOptimizer.Core.Models;
 
-public class ServiceSkill
-{
-    public ServiceType ServiceType { get; set; }
-    public SkillLevel SkillLevel { get; set; }
-
-    public override string ToString() => $"{ServiceType} - {SkillLevel}";
-}
-
 public class SkillsRequired
 {
     public ServiceType ServiceType { get; set; }
@@ -53,26 +45,5 @@ public class SkillsRequired
             return false;
 
         return true;
-    }
-}
-
-public class TechnicianSkills
-{
-    public List<ServiceSkill> ServiceSkills { get; set; } = new();
-
-    public bool CanDoPhysicallyDemanding { get; set; }
-    public bool IsSkilledInLivingWalls { get; set; }
-    public bool IsComfortableWithHeights { get; set; }
-
-    public bool HasLiftCertification { get; set; }
-    public bool HasPesticideCertification { get; set; }
-    public bool IsCitizen { get; set; }
-
-    public bool HasSkill(ServiceType serviceType, SkillLevel minimumLevel)
-    {
-        return ServiceSkills.Any(s =>
-            s.ServiceType == serviceType &&
-            s.SkillLevel >= minimumLevel
-        );
     }
 }
