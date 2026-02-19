@@ -138,7 +138,7 @@ public class ConstraintMatchingTests
     [Fact]
     public void InferSkillsRequired_MapsConstraintFieldsFromService()
     {
-        var site = new ServiceSite { Id = "s1", BestAccessedBy = TransportType.Car };
+        var site = new ServiceSite { Id = "s1", BestAccessedBy = TransportType.CarOrVan };
         var service = new Service
         {
             Id = "svc1",
@@ -160,6 +160,6 @@ public class ConstraintMatchingTests
         Assert.True(result.RequiresLift);
         Assert.False(result.RequiresPesticideCertification);
         Assert.True(result.RequiresCitizenship);
-        Assert.Equal(TransportType.Car, result.PreferredTransport);
+        Assert.Equal(TransportType.CarOrVan, result.PreferredTransport);
     }
 }

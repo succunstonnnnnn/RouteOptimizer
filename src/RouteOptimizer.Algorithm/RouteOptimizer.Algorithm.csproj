@@ -4,6 +4,22 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.OrTools" Version="9.15.6755" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RouteOptimizer.Core\RouteOptimizer.Core.csproj" />
+    <ProjectReference Include="..\RouteOptimizer.Data\RouteOptimizer.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="input.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

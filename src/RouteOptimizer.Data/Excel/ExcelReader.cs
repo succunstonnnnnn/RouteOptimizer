@@ -132,10 +132,21 @@ public class ExcelReader
     private List<Technician> ReadTechniciansRealFormat(IXLWorksheet ws)
     {
         var technicians = new List<Technician>();
-        var lastRow = ws.LastRowUsed()?.RowNumber() ?? 3;
+
+        // Знайдемо рядок, де є дні (Mon/Tue/...)
+        int headerDaysRow = FindHeaderRowWithAny(ws, "Mon", "Monday", "Tue", "Tuesday", "Wed", "Wednesday");
+        int headerFromToRow = headerDaysRow + 1;   // зазвичай наступний рядок містить from/to
+        int firstDataRow = headerFromToRow + 1;    // дані після шапки
+
+        var dayCols = BuildDayFromToColumnMap(ws, headerDaysRow, headerFromToRow);
+        int skillsCol = FindColumnByHeader(ws, headerDaysRow, "Service skills", "ServiceSkills", "Skills");
+        if (skillsCol <= 0)
+            skillsCol = FindColumnByHeader(ws, headerFromToRow, "Service skills", "ServiceSkills", "Skills");
+
+        var lastRow = ws.LastRowUsed()?.RowNumber() ?? firstDataRow;
         int techIndex = 0;
 
-        for (int row = 4; row <= lastRow; row++)
+        for (int row = firstDataRow; row <= lastRow; row++)
         {
             var xlRow = ws.Row(row);
             var name = CellString(xlRow, 1);
@@ -147,31 +158,41 @@ public class ExcelReader
             var dto = new TechnicianDto
             {
                 Id = techId,
-                Name = name,
+                Name = name!,
                 HomeAddress = CellString(xlRow, 2),
                 HomeLocation = new Coordinates(),
                 StartsFrom = CellString(xlRow, 3),
                 FinishesAt = CellString(xlRow, 4),
-                MondayStart = CellTimeString(xlRow, 5),
-                MondayEnd = CellTimeString(xlRow, 6),
-                TuesdayStart = CellTimeString(xlRow, 7),
-                TuesdayEnd = CellTimeString(xlRow, 8),
-                WednesdayStart = CellTimeString(xlRow, 9),
-                WednesdayEnd = CellTimeString(xlRow, 10),
-                ThursdayStart = CellTimeString(xlRow, 11),
-                ThursdayEnd = CellTimeString(xlRow, 12),
-                FridayStart = CellTimeString(xlRow, 13),
-                FridayEnd = CellTimeString(xlRow, 14),
-                SaturdayStart = CellTimeString(xlRow, 15),
-                SaturdayEnd = CellTimeString(xlRow, 16),
-                SundayStart = CellTimeString(xlRow, 17),
-                SundayEnd = CellTimeString(xlRow, 18),
+
+                MondayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Monday, isFrom: true),
+                MondayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Monday, isFrom: false),
+
+                TuesdayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Tuesday, true),
+                TuesdayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Tuesday, false),
+
+                WednesdayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Wednesday, true),
+                WednesdayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Wednesday, false),
+
+                ThursdayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Thursday, true),
+                ThursdayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Thursday, false),
+
+                FridayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Friday, true),
+                FridayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Friday, false),
+
+                SaturdayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Saturday, true),
+                SaturdayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Saturday, false),
+
+                SundayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Sunday, true),
+                SundayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Sunday, false),
+
+                // ⚠️ якщо ці колонки у твоєму Excel не 19..30 — тоді їх теж треба читати по шапці
                 MinBreakMinutes = CellInt(xlRow, 19),
                 BreakWindowStart = CellTimeString(xlRow, 20),
                 BreakWindowEnd = CellTimeString(xlRow, 21),
                 MaxHoursPerDay = CellInt(xlRow, 22),
                 MaxHoursPerWeek = CellInt(xlRow, 23),
-                ServiceSkills = CellString(xlRow, 24),
+                ServiceSkills = CellString(xlRow, skillsCol) ?? CellString(xlRow, 24),
+
                 CanDoPhysicallyDemanding = CellBoolNullable(xlRow, 25),
                 IsSkilledInLivingWalls = CellBoolNullable(xlRow, 26),
                 IsComfortableWithHeights = CellBoolNullable(xlRow, 27),
@@ -187,6 +208,7 @@ public class ExcelReader
 
         return technicians;
     }
+
 
     // ─── Legacy format: "Sites" sheet with 1 header row ───
 
@@ -471,15 +493,24 @@ public class ExcelReader
 
     private static TransportType ParseTransportType(string? value)
     {
-        return value?.Trim().ToLowerInvariant() switch
+        var v = value?.Trim().ToLowerInvariant();
+
+        return v switch
         {
-            "car" or "car/van" => TransportType.Car,
-            "public transport" or "public" => TransportType.PublicTransport,
-            "drive to a hub and then walk" => TransportType.PublicTransport,
+            "car" or "car/van" or "car or van" or "van" => TransportType.CarOrVan,
+
+            "public transport" or "public" or "bus" or "train"
+                => TransportType.DriveToHubAndWalk, 
+
+            "drive to a hub and then walk" or "drive to hub and walk" or "hub and walk"
+                => TransportType.DriveToHubAndWalk,
+
             "either works" or "either" => TransportType.Either,
+            null or "" => TransportType.Either,
             _ => TransportType.Either
         };
     }
+
 
     private static PermitDifficulty ParsePermitDifficulty(string? value)
     {
@@ -529,4 +560,105 @@ public class ExcelReader
             _ => 45
         };
     }
+    private static int FindHeaderRowWithAny(IXLWorksheet ws, params string[] tokens)
+    {
+        // шукаємо у перших 30 рядках (надійніше)
+        for (int r = 1; r <= 30; r++)
+        {
+            var row = ws.Row(r);
+            var lastCol = row.LastCellUsed()?.Address.ColumnNumber ?? 0;
+
+            for (int c = 1; c <= lastCol; c++)
+            {
+                var v = row.Cell(c).GetString().Trim();
+                if (string.IsNullOrEmpty(v)) continue;
+
+                if (tokens.Any(t => v.Equals(t, StringComparison.OrdinalIgnoreCase)))
+                    return r;
+            }
+        }
+
+        // fallback
+        return 2;
+    }
+
+    private static Dictionary<DayOfWeek, (int FromCol, int ToCol)> BuildDayFromToColumnMap(
+        IXLWorksheet ws, int dayRow, int fromToRow)
+    {
+        var map = new Dictionary<DayOfWeek, (int, int)>();
+
+        var dayRowObj = ws.Row(dayRow);
+        var fromToRowObj = ws.Row(fromToRow);
+
+        var lastCol = Math.Max(
+            dayRowObj.LastCellUsed()?.Address.ColumnNumber ?? 0,
+            fromToRowObj.LastCellUsed()?.Address.ColumnNumber ?? 0);
+
+        DayOfWeek? currentDay = null;
+
+        for (int c = 1; c <= lastCol; c++)
+        {
+            var dayText = dayRowObj.Cell(c).GetString().Trim();
+            if (!string.IsNullOrEmpty(dayText))
+                currentDay = ParseDay(dayText);
+
+            if (currentDay == null) continue;
+
+            var ft = fromToRowObj.Cell(c).GetString().Trim().ToLowerInvariant();
+            if (ft == "from")
+            {
+                int fromCol = c;
+                int toCol = (c + 1 <= lastCol) ? c + 1 : c;
+                map[currentDay.Value] = (fromCol, toCol);
+            }
+        }
+
+        return map;
+    }
+
+    private static DayOfWeek? ParseDay(string text)
+    {
+        var t = text.Trim().ToLowerInvariant();
+        return t switch
+        {
+            "mon" or "monday" => DayOfWeek.Monday,
+            "tue" or "tues" or "tuesday" => DayOfWeek.Tuesday,
+            "wed" or "wednesday" => DayOfWeek.Wednesday,
+            "thu" or "thursday" => DayOfWeek.Thursday,
+            "fri" or "friday" => DayOfWeek.Friday,
+            "sat" or "saturday" => DayOfWeek.Saturday,
+            "sun" or "sunday" => DayOfWeek.Sunday,
+            _ => null
+        };
+    }
+
+    private static string? ReadTimeByDay(
+        IXLRow row,
+        Dictionary<DayOfWeek, (int FromCol, int ToCol)> map,
+        DayOfWeek day,
+        bool isFrom)
+    {
+        if (!map.TryGetValue(day, out var cols))
+            return null;
+
+        int col = isFrom ? cols.FromCol : cols.ToCol;
+        return CellTimeString(row, col);
+    }
+    private static int FindColumnByHeader(IXLWorksheet ws, int headerRow, params string[] names)
+    {
+        var row = ws.Row(headerRow);
+        var lastCol = row.LastCellUsed()?.Address.ColumnNumber ?? 0;
+
+        for (int c = 1; c <= lastCol; c++)
+        {
+            var text = row.Cell(c).GetString().Trim();
+            if (string.IsNullOrEmpty(text)) continue;
+
+            if (names.Any(n => text.Equals(n, StringComparison.OrdinalIgnoreCase)))
+                return c;
+        }
+
+        return -1;
+    }
+
 }

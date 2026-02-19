@@ -58,7 +58,7 @@ public class VisitGenerator
             var scheduledDate = startDate.AddDays(i * intervalWeeks * 7);
 
             // Find first available day in that week
-            var availableDate = FindNextAvailableDate(scheduledDate, availability);
+            var availableDate = FindDistributedAvailableDate(scheduledDate, availability, site.Id, service.Id);
 
             if (availableDate == null) continue; // Skip if no availability
 
@@ -87,7 +87,29 @@ public class VisitGenerator
 
         return visits;
     }
+    private DateTimeOffset? FindDistributedAvailableDate(
+    DateTimeOffset weekStartCandidate,
+    ServiceSiteAvailability availability,
+    string siteId,
+    string serviceId)
+    {
+        // будуємо список доступних днів у цьому тижні (7 днів від weekStartCandidate)
+        var days = new List<DateTimeOffset>();
+        for (int dayOffset = 0; dayOffset < 7; dayOffset++)
+        {
+            var d = weekStartCandidate.AddDays(dayOffset);
+            if (availability.IsAvailableOnDay(d.DayOfWeek))
+                days.Add(d);
+        }
 
+        if (days.Count == 0) return null;
+
+        // стабільний індекс (щоб не "скакало" щоразу)
+        int seed = (siteId + "|" + serviceId).GetHashCode();
+        int idx = Math.Abs(seed) % days.Count;
+
+        return days[idx];
+    }
     private DateTimeOffset? FindNextAvailableDate(
         DateTimeOffset startDate,
         ServiceSiteAvailability availability)
