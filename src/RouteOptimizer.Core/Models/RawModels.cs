@@ -52,7 +52,7 @@ public class ServiceSite
 
     public List<string>? MustBeServicedWithSiteIds { get; set; }
 
-    // Per-day availability (flat fields for JSON/Excel compatibility)
+   
     public string? MondayStart { get; set; }
     public string? MondayEnd { get; set; }
     public string? TuesdayStart { get; set; }
@@ -126,6 +126,7 @@ public class Service
 
     public List<string>? AllowedTechnicianIds { get; set; }
     public List<string>? ForbiddenTechnicianIds { get; set; }
+    public int VisitsPerWeek { get; set; } = 0; 
 
 }
 

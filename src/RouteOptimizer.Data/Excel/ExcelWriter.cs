@@ -21,6 +21,11 @@ public class ExcelWriter
     {
         using var workbook = new XLWorkbook();
         var ws = workbook.AddWorksheet("Schedule");
+        var wsSimple = workbook.AddWorksheet("Schedule_Simple");
+        wsSimple.Cell(1, 1).Value = "Technician";
+        wsSimple.Cell(1, 2).Value = "Day";
+        wsSimple.Cell(1, 3).Value = "VisitIds";
+        int simpleRow = 2;
 
         var headers = new[] { "Technician", "Day", "Visit Sequence", "Site Name",
             "Arrival Time", "Departure Time", "Service Duration (min)",
@@ -50,7 +55,29 @@ public class ExcelWriter
                 row++;
             }
         }
+        foreach (var route in schedule.Routes.OrderBy(r => r.TechnicianId))
+        {
+            if (route.Stops == null || route.Stops.Count == 0)
+                continue;
 
+            var techName = techLookup.GetValueOrDefault(route.TechnicianId, route.TechnicianId);
+
+            
+            var day = route.Stops.Min(s => s.ArrivalTime).ToString("yyyy-MM-dd");
+
+            var visitIds = string.Join(", ",
+                route.Stops
+                    .OrderBy(s => s.Sequence)
+                    .Select(s => s.VisitInstanceId)
+            );
+
+            wsSimple.Cell(simpleRow, 1).Value = techName;
+            wsSimple.Cell(simpleRow, 2).Value = day;
+            wsSimple.Cell(simpleRow, 3).Value = visitIds;
+            simpleRow++;
+        }
+
+        wsSimple.Columns().AdjustToContents();
         ws.Columns().AdjustToContents();
         workbook.SaveAs(outputStream);
     }

@@ -133,10 +133,10 @@ public class ExcelReader
     {
         var technicians = new List<Technician>();
 
-        // Знайдемо рядок, де є дні (Mon/Tue/...)
+        
         int headerDaysRow = FindHeaderRowWithAny(ws, "Mon", "Monday", "Tue", "Tuesday", "Wed", "Wednesday");
-        int headerFromToRow = headerDaysRow + 1;   // зазвичай наступний рядок містить from/to
-        int firstDataRow = headerFromToRow + 1;    // дані після шапки
+        int headerFromToRow = headerDaysRow + 1;  
+        int firstDataRow = headerFromToRow + 1;    
 
         var dayCols = BuildDayFromToColumnMap(ws, headerDaysRow, headerFromToRow);
         int skillsCol = FindColumnByHeader(ws, headerDaysRow, "Service skills", "ServiceSkills", "Skills");
@@ -185,7 +185,7 @@ public class ExcelReader
                 SundayStart = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Sunday, true),
                 SundayEnd = ReadTimeByDay(xlRow, dayCols, DayOfWeek.Sunday, false),
 
-                // ⚠️ якщо ці колонки у твоєму Excel не 19..30 — тоді їх теж треба читати по шапці
+                
                 MinBreakMinutes = CellInt(xlRow, 19),
                 BreakWindowStart = CellTimeString(xlRow, 20),
                 BreakWindowEnd = CellTimeString(xlRow, 21),
@@ -210,7 +210,7 @@ public class ExcelReader
     }
 
 
-    // ─── Legacy format: "Sites" sheet with 1 header row ───
+    
 
     private List<ServiceSite> ReadSitesLegacyFormat(XLWorkbook workbook)
     {
@@ -371,7 +371,7 @@ public class ExcelReader
             };
 
             service.VisitFrequency = ServiceSiteParser.ParseFrequencyString(service.FrequencyOfVisits);
-
+            service.VisitsPerWeek = ServiceSiteParser.ParseVisitsPerWeek(service.FrequencyOfVisits);
             site.Services ??= new List<Service>();
             site.Services.Add(service);
         }
@@ -562,7 +562,7 @@ public class ExcelReader
     }
     private static int FindHeaderRowWithAny(IXLWorksheet ws, params string[] tokens)
     {
-        // шукаємо у перших 30 рядках (надійніше)
+       
         for (int r = 1; r <= 30; r++)
         {
             var row = ws.Row(r);

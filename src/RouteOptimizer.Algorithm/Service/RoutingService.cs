@@ -15,7 +15,7 @@ namespace RouteOptimizer.Algorithm.Services
         private const int BetweenVisitsBufferMinutes = 20;
         private const double AvgSpeedKmPerHour = 30.0;
 
-        // Щоб OR-Tools міг "викидати" неможливі візити замість solution=null
+        
         private const long UnassignedPenalty = 1_000_000;
 
         public RoutingService(
@@ -23,7 +23,9 @@ namespace RouteOptimizer.Algorithm.Services
             List<VisitInstance> visits,
             DistanceMatrix distanceMatrix)
         {
-            _technicians = technicians ?? throw new ArgumentNullException(nameof(technicians));
+            _technicians = (technicians ?? throw new ArgumentNullException(nameof(technicians)))
+     .OrderBy(t => t.Id)
+     .ToList();
             _visits = visits ?? throw new ArgumentNullException(nameof(visits));
             _distanceMatrix = distanceMatrix ?? throw new ArgumentNullException(nameof(distanceMatrix));
         }
@@ -57,12 +59,73 @@ namespace RouteOptimizer.Algorithm.Services
                 schedule.UnassignedVisitIds = dayVisits.Select(v => v.Id).ToList();
                 return schedule;
             }
+            // ===== BREAK CONSTRAINTS (dummy visits) =====
+            var breakVisits = new List<VisitInstance>();
 
-            // ⬇️⬇️⬇️ СЮДИ ВСТАВЛЯЄШ ВЕСЬ КОД, ЯКИЙ БУВ У ТВОЄМУ СТАРОМУ SolveForDay,
-            // починаючи з перевірки missingSites і до return schedule;
-            // (він у тебе вже є — просто вирізаєш і вставляєш сюди)
+            foreach (var tech in _technicians)
+            {
+                var br = tech.BreakRequirement;
+                if (br == null) continue;
 
-            // Перевірка: чи є всі service sites у матриці
+                int minBreak = br.MinBreakMinutes;
+                if (minBreak <= 0) continue;
+
+               
+                var sched = tech.GetScheduleForDay(day.DayOfWeek);
+                if (sched == null) continue;
+
+                
+                var startTs = br.BreakWindowStart != TimeSpan.Zero ? br.BreakWindowStart : sched.Value.Start;
+                var endTs = br.BreakWindowEnd != TimeSpan.Zero ? br.BreakWindowEnd : sched.Value.End;
+
+               
+                if (endTs <= startTs)
+                    endTs = sched.Value.End;
+
+                
+                if (startTs < sched.Value.Start) startTs = sched.Value.Start;
+                if (endTs > sched.Value.End) endTs = sched.Value.End;
+
+                
+                if (endTs <= startTs) continue;
+
+                var breakVisit = new VisitInstance
+                {
+                    Id = $"BREAK-{tech.Id}-{day:yyyyMMdd}",
+                    ServiceId = "BREAK",
+                    ServiceSiteId = $"tech_{tech.Id}_start",
+
+                  
+                    Latitude = tech.GetStartLocation().Latitude,
+                    Longitude = tech.GetStartLocation().Longitude,
+
+                    ScheduledDate = day,
+                    DurationMinutes = minBreak,
+
+                    TimeWindows = new List<TimeWindow>
+        {
+            new TimeWindow
+            {
+                DayOfWeek = day.DayOfWeek,
+                StartTime = startTs,
+                EndTime = endTs
+            }
+        },
+
+                  
+                    AllowedTechnicianIds = new List<string> { tech.Id },
+
+                    SiteName = "BREAK",
+                    SiteAddress = "BREAK"
+                };
+
+                breakVisits.Add(breakVisit);
+            }
+
+            
+            if (breakVisits.Count > 0)
+                dayVisits = dayVisits.Concat(breakVisits).ToList();
+            
             var missingSites = dayVisits
                 .Select(v => v.ServiceSiteId)
                 .Distinct()
@@ -142,6 +205,7 @@ namespace RouteOptimizer.Algorithm.Services
                 "Time");
 
             var timeDimension = routing.GetDimensionOrDie("Time");
+            timeDimension.SetGlobalSpanCostCoefficient(1);
 
             for (int i = 0; i < visitCount; i++)
             {
@@ -161,7 +225,7 @@ namespace RouteOptimizer.Algorithm.Services
                 long startMin = (long)sched.Value.Start.TotalMinutes;
                 long endMin = (long)sched.Value.End.TotalMinutes;
 
-                // ✅ MAX HOURS PER DAY
+                //  MAX HOURS PER DAY
                 long maxWorkMin = 0;
                 if (tech.MaxHoursPerDay > 0)
                     maxWorkMin = tech.MaxHoursPerDay * 60L;
@@ -169,23 +233,27 @@ namespace RouteOptimizer.Algorithm.Services
                 long startIndex = routing.Start(v);
                 long endIndex = routing.End(v);
 
-                // старт фіксуємо
+                
                 timeDimension.CumulVar(startIndex).SetRange(startMin, startMin);
 
-                // найпізніший можливий кінець: або кінець робочого дня, або start+maxHours
+                
                 long latestEnd = endMin;
                 if (maxWorkMin > 0)
                     latestEnd = Math.Min(endMin, startMin + maxWorkMin);
 
                 timeDimension.CumulVar(endIndex).SetRange(startMin, latestEnd);
 
-                // додатково жорстка умова (на всякий)
+              
                 if (maxWorkMin > 0)
                     routing.solver().Add(timeDimension.CumulVar(endIndex) <= startMin + maxWorkMin);
             }
 
             for (int i = 0; i < visitCount; i++)
             {
+              
+                if (dayVisits[i].Id.StartsWith("BREAK-", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
                 long nodeIndex = manager.NodeToIndex(i);
                 routing.AddDisjunction(new long[] { nodeIndex }, UnassignedPenalty);
             }
@@ -249,7 +317,7 @@ namespace RouteOptimizer.Algorithm.Services
                 if (!HasLocation(startId))
                     throw new InvalidOperationException($"DistanceMatrix missing location: {startId}");
 
-                // якщо end не додали (StartsFrom == FinishesAt) — end = start
+               
                 if (!HasLocation(endId))
                     endId = startId;
 
@@ -260,7 +328,7 @@ namespace RouteOptimizer.Algorithm.Services
             return map;
         }
 
-        // ---------- constraints (з детальними причинами) ----------
+        // ---------- constraints  ----------
 
         private void AddCompatibilityConstraints(
             RoutingModel routing,
@@ -285,15 +353,14 @@ namespace RouteOptimizer.Algorithm.Services
                     bool allowed = true;
                     string reason = "OK";
 
-                    // 1) працює цього дня + має schedule
+                    
                     if (!tech.CanWorkOn(day.DayOfWeek) || tech.GetScheduleForDay(day.DayOfWeek) == null)
                     {
                         allowed = false;
                         reason = "NOT_WORKING_TODAY";
                     }
 
-                    // 2) skills + transport
-                    // skills + preferred transport
+                   
                     if (allowed && visit.SkillsRequired != null)
                     {
                         var req = visit.SkillsRequired;
@@ -305,27 +372,48 @@ namespace RouteOptimizer.Algorithm.Services
 
                         if (!hasSkill)
                         {
-                            // причина №1
                             allowed = false;
-                            // debug
-                            Console.WriteLine($"SKILLS_MISMATCH: visit={visit.Id} requires {req.ServiceType} >= {req.MinimumSkillLevel} | tech={tech.Id} has: " +
-                                $"{string.Join(", ", tech.Skills.ServiceSkills.Select(s => $"{s.ServiceType}:{s.SkillLevel}"))}");
+                            reason = "SKILLS_MISMATCH";
                         }
-
-                        // додаткові прапорці (причина №2..N)
-                        if (allowed && req.IsPhysicallyDemanding && !tech.Skills.CanDoPhysicallyDemanding) allowed = false;
-                        if (allowed && req.RequiresLivingWalls && !tech.Skills.IsSkilledInLivingWalls) allowed = false;
-                        if (allowed && req.RequiresHeightWork && !tech.Skills.IsComfortableWithHeights) allowed = false;
-                        if (allowed && req.RequiresLift && !tech.Skills.HasLiftCertification) allowed = false;
-                        if (allowed && req.RequiresPesticideCertification && !tech.Skills.HasPesticideCertification) allowed = false;
-                        if (allowed && req.RequiresCitizenship && !tech.Skills.IsCitizen) allowed = false;
-
-                        if (allowed && RequiresVehicle(req.PreferredTransport) && !tech.HasVehicle)
+                        else if (req.IsPhysicallyDemanding && !tech.Skills.CanDoPhysicallyDemanding)
+                        {
                             allowed = false;
+                            reason = "PHYSICAL_MISMATCH";
+                        }
+                        else if (req.RequiresLivingWalls && !tech.Skills.IsSkilledInLivingWalls)
+                        {
+                            allowed = false;
+                            reason = "LIVING_WALLS_REQUIRED";
+                        }
+                        else if (req.RequiresHeightWork && !tech.Skills.IsComfortableWithHeights)
+                        {
+                            allowed = false;
+                            reason = "HEIGHT_WORK_REQUIRED";
+                        }
+                        else if (req.RequiresLift && !tech.Skills.HasLiftCertification)
+                        {
+                            allowed = false;
+                            reason = "LIFT_CERT_REQUIRED";
+                        }
+                        else if (req.RequiresPesticideCertification && !tech.Skills.HasPesticideCertification)
+                        {
+                            allowed = false;
+                            reason = "PESTICIDE_CERT_REQUIRED";
+                        }
+                        else if (req.RequiresCitizenship && !tech.Skills.IsCitizen)
+                        {
+                            allowed = false;
+                            reason = "CITIZENSHIP_REQUIRED";
+                        }
+                        else if (RequiresVehicle(req.PreferredTransport) && !tech.HasVehicle)
+                        {
+                            allowed = false;
+                            reason = "VEHICLE_REQUIRED";
+                        }
                     }
 
 
-                    // 3) whitelist
+                  
                     if (allowed && visit.AllowedTechnicianIds != null && visit.AllowedTechnicianIds.Count > 0
                         && !visit.AllowedTechnicianIds.Contains(tech.Id))
                     {
@@ -333,7 +421,7 @@ namespace RouteOptimizer.Algorithm.Services
                         reason = "NOT_IN_ALLOWED_LIST";
                     }
 
-                    // 4) blacklist
+                    
                     if (allowed && visit.ForbiddenTechnicianIds != null && visit.ForbiddenTechnicianIds.Count > 0
                         && visit.ForbiddenTechnicianIds.Contains(tech.Id))
                     {
@@ -341,7 +429,7 @@ namespace RouteOptimizer.Algorithm.Services
                         reason = "IN_FORBIDDEN_LIST";
                     }
 
-                    // 5) security list
+                   
                     if (allowed && visit.SecurityClearanceTechnicianIds != null && visit.SecurityClearanceTechnicianIds.Count > 0
                         && !visit.SecurityClearanceTechnicianIds.Contains(tech.Id))
                     {
@@ -372,7 +460,7 @@ namespace RouteOptimizer.Algorithm.Services
         private static bool RequiresVehicle(TransportType t) => t switch
         {
             TransportType.CarOrVan => true,
-            TransportType.DriveToHubAndWalk => true, // теж потребує авто до хабу
+            TransportType.DriveToHubAndWalk => true, 
             TransportType.Either => false,
             _ => false
         };
@@ -422,7 +510,13 @@ namespace RouteOptimizer.Algorithm.Services
                         string toLocId = nodeToLocationId[node];
                         double km = _distanceMatrix.GetDistance(prevLocId, toLocId);
                         int driveMin = (int)KmToMinutes(km);
-
+                       
+                        if (visit.Id.StartsWith("BREAK-", StringComparison.OrdinalIgnoreCase))
+                        {
+                            prevLocId = nodeToLocationId[node];
+                            index = nextIndex;
+                            continue;
+                        }
                         route.Stops.Add(new RouteStop
                         {
                             Sequence = seq++,
@@ -435,7 +529,7 @@ namespace RouteOptimizer.Algorithm.Services
                             IsWalkingFromPrevious = false
                         });
 
-                        // позначимо visit
+                       
                         visit.AssignedTechnicianId = tech.Id;
                         visit.IsAssigned = true;
                         visit.RouteId = route.Id;
@@ -468,7 +562,7 @@ namespace RouteOptimizer.Algorithm.Services
             for (int i = 0; i < visitCount; i++)
             {
                 long index = manager.NodeToIndex(i);
-                long active = solution.Value(routing.ActiveVar(index)); // 1 = visited, 0 = dropped
+                long active = solution.Value(routing.ActiveVar(index)); 
                 if (active == 0)
                     unassigned.Add(dayVisits[i].Id);
             }

@@ -130,7 +130,7 @@ public class ServiceSiteParser
         if (f.Contains("week") && (f.Contains("1x") || f.Contains("once")))
             return VisitFrequency.Weekly;
         if (f.Contains("week") && (f.Contains("2x") || f.Contains("twice")))
-            return VisitFrequency.Weekly; // 2x/week is high frequency, map to weekly
+            return VisitFrequency.Weekly; 
         if (f.Contains("7 day"))
             return VisitFrequency.Weekly;
         if (f.Contains("14 day") || (f.Contains("2") && f.Contains("week")))
@@ -142,7 +142,27 @@ public class ServiceSiteParser
 
         return VisitFrequency.BiWeekly;
     }
+    public static int ParseVisitsPerWeek(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return 0;
+        s = s.Trim().ToLowerInvariant();
 
+       
+        if (!s.Contains("week")) return 0;
+
+        int i = 0;
+        while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
+
+        int start = i;
+        while (i < s.Length && char.IsDigit(s[i])) i++;
+
+        if (i == start) return 0;
+
+        if (int.TryParse(s.Substring(start, i - start), out var n) && n > 0)
+            return n;
+
+        return 0;
+    }
     private static int DefaultDurationMinutes(string? jobType)
     {
         return jobType?.ToLowerInvariant() switch

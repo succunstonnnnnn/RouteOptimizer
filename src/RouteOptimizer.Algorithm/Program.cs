@@ -16,14 +16,7 @@ internal class Program
 
         try
         {
-            // ---------------------------------------------------------
-            // Формати запуску:
-            // 1) 1 Excel (в ньому є і sites і technicians на листах)
-            //    RouteOptimizer.Algorithm.exe input.xlsx output.xlsx 2026-02-16
-            //
-            // 2) 2 Excel (окремо)
-            //    RouteOptimizer.Algorithm.exe sites.xlsx technicians.xlsx output.xlsx 2026-02-16
-            // ---------------------------------------------------------
+            
 
             string sitesPath;
             string techsPath;
@@ -60,9 +53,7 @@ internal class Program
                 return 1;
             }
 
-            // ---------------------------------------------------------
-            // 0) Розв’язуємо шляхи відносно папки запуску
-            // ---------------------------------------------------------
+          
             var baseDir = AppContext.BaseDirectory;
 
             var fullSitesPath = ResolvePath(baseDir, sitesPath);
@@ -87,15 +78,13 @@ internal class Program
                 return 1;
             }
 
-            // ---------------------------------------------------------
-            // 1) Читаємо та процесимо дані
-            // ---------------------------------------------------------
+           
             var processor = new DataProcessor();
             ProcessedData processed;
 
             if (Path.GetFullPath(fullSitesPath) == Path.GetFullPath(fullTechsPath))
             {
-                // 1 Excel — напряму
+               
                 using var stream = File.OpenRead(fullSitesPath);
                 processed = processor.ProcessFromExcel(stream, day);
                 Console.WriteLine("=== COORD CHECK ===");
@@ -134,7 +123,7 @@ internal class Program
             }
             else
             {
-                // 2 Excel — читаємо окремо через ExcelReader
+               
                 var reader = new ExcelReader();
 
                 List<ServiceSite> sites;
@@ -146,7 +135,7 @@ internal class Program
                 using (var t = File.OpenRead(fullTechsPath))
                     techs = reader.ReadTechnicians(t);
 
-                // DataProcessor.ProcessParsedData(...) private -> обходимо reflection-ом
+                
                 processed = InvokeProcessParsedData(processor, sites, techs, day);
 
             }
@@ -155,9 +144,7 @@ internal class Program
             Console.WriteLine($"Planning horizon (weeks): {processed.PlanningHorizonWeeks}");
             Console.WriteLine();
 
-            // ---------------------------------------------------------
-            // 2) Запуск оптимізації на 1 день
-            // ---------------------------------------------------------
+            
             var routing = new RoutingService(
                 processed.Technicians,
                 processed.Visits,
@@ -170,10 +157,10 @@ internal class Program
             };
 
             var horizonDays = processed.PlanningHorizonWeeks * 7;
-            // ✅ скільки хвилин вже "витратили" в поточному тижні для кожного техніка
+           
             var weekUsedMinutes = processed.Technicians.ToDictionary(t => t.Id, _ => 0);
 
-            // ✅ щоб знати, коли почався тиждень
+           
             var weekStart = processed.StartDate.Date;
             var originalMaxHoursPerDay = processed.Technicians.ToDictionary(t => t.Id, t => t.MaxHoursPerDay);
             for (int d = 0; d < horizonDays; d++)
@@ -181,7 +168,7 @@ internal class Program
                 foreach (var tech in processed.Technicians)
                     tech.MaxHoursPerDay = originalMaxHoursPerDay[tech.Id];
                 var currentDay = processed.StartDate.Date.AddDays(d);
-                // якщо почався новий тиждень — обнуляємо лічильники
+               
                 if ((currentDay - weekStart).TotalDays >= 7)
                 {
                     weekStart = currentDay;
@@ -189,7 +176,7 @@ internal class Program
                         weekUsedMinutes[key] = 0;
                 }
 
-                // тимчасово урізаємо MaxHoursPerDay, щоб не перевищити MaxHoursPerWeek
+              
                 foreach (var tech in processed.Technicians)
                 {
                     int weekLimitMin = (tech.MaxHoursPerWeek > 0 ? tech.MaxHoursPerWeek * 60 : 0);
@@ -198,13 +185,12 @@ internal class Program
                     int used = weekUsedMinutes[tech.Id];
                     int remaining = Math.Max(0, weekLimitMin - used);
 
-                    // дозволені години сьогодні = min(звичні денні, залишок тижня)
+                  
                     int dayLimitMin = tech.MaxHoursPerDay * 60;
                     int effectiveTodayMin = Math.Min(dayLimitMin, remaining);
 
-                    // якщо 0 — технік фактично "не працює" сьогодні
-                    // (просто ставимо MaxHoursPerDay дуже маленьким)
-                    tech.MaxHoursPerDay = (int)Math.Ceiling(effectiveTodayMin / 60.0);
+                   
+                    tech.MaxHoursPerDay = effectiveTodayMin / 60;
                 }
 
                 var dayVisits = processed.Visits
@@ -214,15 +200,15 @@ internal class Program
                 var daySchedule = routing.SolveForDay(currentDay, dayVisits);
                 foreach (var r in daySchedule.Routes)
                 {
-                    // рахуємо скільки хвилин зайняв маршрут (приблизно)
+                  
                     int minutes = r.TotalDurationMinutes;
                     weekUsedMinutes[r.TechnicianId] += Math.Max(0, minutes);
                 }
 
-                // додаємо всі маршрути
+               
                 finalSchedule.Routes.AddRange(daySchedule.Routes);
 
-                // додаємо unassigned
+               
                 if (daySchedule.UnassignedVisitIds != null && daySchedule.UnassignedVisitIds.Count > 0)
                 {
                     finalSchedule.UnassignedVisitIds ??= new List<string>();
@@ -274,11 +260,11 @@ internal class Program
 
     private static string ResolvePath(string baseDir, string path)
     {
-        // якщо абсолютний — лишаємо як є
+        
         if (Path.IsPathRooted(path))
             return path;
 
-        // якщо відносний — від baseDir (bin/Debug/net8.0)
+        
         return Path.GetFullPath(Path.Combine(baseDir, path));
     }
 

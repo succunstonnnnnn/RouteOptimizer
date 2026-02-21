@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using RouteOptimizer.Core.Models;
 using RouteOptimizer.Data.Parsers;
 
@@ -5,7 +8,6 @@ namespace RouteOptimizer.Data.Preprocessing;
 
 public class VisitGenerator
 {
-
     public List<VisitInstance> GenerateVisits(
         List<ServiceSite> sites,
         DateTimeOffset startDate,
@@ -21,12 +23,7 @@ public class VisitGenerator
             {
                 if (service.IsDeleted == true || site.IsDeleted == true) continue;
 
-                var serviceVisits = GenerateVisitsForService(
-                    site,
-                    service,
-                    startDate,
-                    planningHorizonWeeks
-                );
+                var serviceVisits = GenerateVisitsForService(site, service, startDate, planningHorizonWeeks);
                 visits.AddRange(serviceVisits);
             }
         }
@@ -41,28 +38,69 @@ public class VisitGenerator
         int planningHorizonWeeks)
     {
         var visits = new List<VisitInstance>();
+
+        var availability = site.Availability;
+        var skillsRequired = ServiceSiteParser.InferSkillsRequired(site, service);
+
+        
+        if (service.VisitsPerWeek > 0)
+        {
+            for (int w = 0; w < planningHorizonWeeks; w++)
+            {
+                var weekStart = startDate.AddDays(w * 7);
+
+                var days = GetAvailableDaysInWeek(weekStart, availability);
+                if (days.Count == 0)
+                    continue;
+
+                int k = service.VisitsPerWeek;
+
+                var chosenDays = PickKDaysWithRepeatsStable(days, k, site.Id, service.Id, w);
+
+                for (int i = 0; i < chosenDays.Count; i++)
+                {
+                    var visitDay = chosenDays[i];
+
+                    visits.Add(new VisitInstance
+                    {
+                        Id = $"{site.Id}-{service.Id}-W{w + 1}-V{i + 1}",
+                        ServiceId = service.Id,
+                        ServiceSiteId = site.Id,
+                        Latitude = site.Coordinates?.Latitude ?? 0,
+                        Longitude = site.Coordinates?.Longitude ?? 0,
+                        ScheduledDate = visitDay,
+                        DurationMinutes = service.EstimatedDurationMinutes,
+                        TimeWindows = availability.TimeWindows
+                            .Where(tw => tw.DayOfWeek == visitDay.DayOfWeek)
+                            .ToList(),
+                        SkillsRequired = skillsRequired,
+                        AllowedTechnicianIds = service.AllowedTechnicianIds,
+                        ForbiddenTechnicianIds = service.ForbiddenTechnicianIds,
+                        SecurityClearanceTechnicianIds = site.TechsWithPermit,
+                        SiteName = site.Name ?? "Unknown",
+                        SiteAddress = site.Address ?? "Unknown"
+                    });
+                }
+            }
+
+            return visits;
+        }
+
+        
         var intervalWeeks = (int)service.VisitFrequency;
         if (intervalWeeks <= 0)
             return visits;
 
-        var totalVisits = (int)Math.Ceiling(
-            planningHorizonWeeks / (double)intervalWeeks
-        );
-
-
-        var availability = site.Availability;
-        var skillsRequired = ServiceSiteParser.InferSkillsRequired(site, service);
+        var totalVisits = (int)Math.Ceiling(planningHorizonWeeks / (double)intervalWeeks);
 
         for (int i = 0; i < totalVisits; i++)
         {
             var scheduledDate = startDate.AddDays(i * intervalWeeks * 7);
 
-            // Find first available day in that week
             var availableDate = FindDistributedAvailableDate(scheduledDate, availability, site.Id, service.Id);
+            if (availableDate == null) continue;
 
-            if (availableDate == null) continue; // Skip if no availability
-
-            var visit = new VisitInstance
+            visits.Add(new VisitInstance
             {
                 Id = $"{site.Id}-{service.Id}-W{i + 1}",
                 ServiceId = service.Id,
@@ -80,50 +118,71 @@ public class VisitGenerator
                 SecurityClearanceTechnicianIds = site.TechsWithPermit,
                 SiteName = site.Name ?? "Unknown",
                 SiteAddress = site.Address ?? "Unknown"
-            };
-
-            visits.Add(visit);
+            });
         }
 
         return visits;
     }
-    private DateTimeOffset? FindDistributedAvailableDate(
-    DateTimeOffset weekStartCandidate,
-    ServiceSiteAvailability availability,
-    string siteId,
-    string serviceId)
-    {
-        // будуємо список доступних днів у цьому тижні (7 днів від weekStartCandidate)
-        var days = new List<DateTimeOffset>();
-        for (int dayOffset = 0; dayOffset < 7; dayOffset++)
-        {
-            var d = weekStartCandidate.AddDays(dayOffset);
-            if (availability.IsAvailableOnDay(d.DayOfWeek))
-                days.Add(d);
-        }
 
+    // --- helpers ---
+
+    private static DateTimeOffset? FindDistributedAvailableDate(
+        DateTimeOffset weekStartCandidate,
+        ServiceSiteAvailability availability,
+        string siteId,
+        string serviceId)
+    {
+        var days = GetAvailableDaysInWeek(weekStartCandidate, availability);
         if (days.Count == 0) return null;
 
-        // стабільний індекс (щоб не "скакало" щоразу)
-        int seed = (siteId + "|" + serviceId).GetHashCode();
+        int seed = StableHash(siteId + "|" + serviceId);
         int idx = Math.Abs(seed) % days.Count;
 
         return days[idx];
     }
-    private DateTimeOffset? FindNextAvailableDate(
-        DateTimeOffset startDate,
+
+    private static List<DateTimeOffset> GetAvailableDaysInWeek(
+        DateTimeOffset weekStart,
         ServiceSiteAvailability availability)
     {
-        // Try to find available day within the week
-        for (int dayOffset = 0; dayOffset < 7; dayOffset++)
+        var days = new List<DateTimeOffset>();
+
+        for (int i = 0; i < 7; i++)
         {
-            var candidateDate = startDate.AddDays(dayOffset);
-            if (availability.IsAvailableOnDay(candidateDate.DayOfWeek))
-            {
-                return candidateDate;
-            }
+            var d = weekStart.AddDays(i);
+            if (availability.IsAvailableOnDay(d.DayOfWeek))
+                days.Add(d);
         }
 
-        return null; // No availability in this week
+        return days;
+    }
+
+    private static List<DateTimeOffset> PickKDaysWithRepeatsStable(
+        List<DateTimeOffset> days,
+        int k,
+        string siteId,
+        string serviceId,
+        int weekIndex)
+    {
+        int seed = StableHash($"{siteId}|{serviceId}|W{weekIndex}");
+        int start = Math.Abs(seed) % days.Count;
+
+        var chosen = new List<DateTimeOffset>();
+
+        for (int i = 0; i < k; i++)
+            chosen.Add(days[(start + i) % days.Count]);
+
+        return chosen;
+    }
+
+    private static int StableHash(string s)
+    {
+        unchecked
+        {
+            int hash = 23;
+            foreach (char c in s)
+                hash = hash * 31 + c;
+            return hash;
+        }
     }
 }
